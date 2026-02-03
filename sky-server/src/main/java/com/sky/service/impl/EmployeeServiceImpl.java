@@ -103,4 +103,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        System.out.println("即将更新员工：id, status="+id+"  "+status);  // 加这一行！
+
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("员工ID不能为空或无效");
+        }
+        Employee build = Employee.builder().status(status).id(id).build();
+        employeeMapper.update(build);
+
+    }
+
 }
