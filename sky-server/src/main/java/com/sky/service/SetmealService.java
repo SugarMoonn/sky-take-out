@@ -21,4 +21,6 @@ public interface SetmealService {
 
 
     void updateWithDishes(SetmealDTO setmealDTO);
+
+    void startOrStop(Integer status, Long id);
 }

@@ -43,4 +43,7 @@ public interface DishMapper {
     List<Dish> getByCategoryId(Long categoryId);
 
     List<Dish> list(Dish dish);
+
+    @Select("select * from dish where id in (select dish_id from setmeal_dish where setmeal_id = #{SetmealId})")
+    List<Dish> getBySetmealId(Long SetmealId);
 }
