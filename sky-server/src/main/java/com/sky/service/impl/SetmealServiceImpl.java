@@ -2,10 +2,13 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
@@ -69,5 +72,23 @@ public class SetmealServiceImpl implements SetmealService {
         Page<SetmealVO> page = setmealMapper.pageQuery(setmealPageQueryDTO);  //这个SetmealVO里的变量好像跟需求文档里的不太一致，多了很多变量,好像前端没什么问题？
 
         return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    @Transactional
+    public void deleteByIds(List<Long> ids) {
+        //先一个个检查ids对应的套餐是否是起售种
+
+        ids.forEach(setmealId -> {
+            Setmeal setmeal = setmealMapper.getById(setmealId);
+            if(setmeal.getStatus() == StatusConstant.ENABLE){
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        });
+
+        //删除套餐表中的数据
+        setmealMapper.deleteByIds(ids);
+        //同时删除套餐和菜品的关联数据
+        setmealDishMapper.deleteBySetmealIds(ids);
+
     }
 }

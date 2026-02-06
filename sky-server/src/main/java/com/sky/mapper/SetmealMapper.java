@@ -6,6 +6,9 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface SetmealMapper {
@@ -17,4 +20,9 @@ public interface SetmealMapper {
     Integer countByCategoryId(Long id);
 
     Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    void deleteByIds(List<Long> ids);
+
+    @Select("select * from setmeal where id = #{setmealId}")
+    Setmeal getById(Long setmealId);
 }
