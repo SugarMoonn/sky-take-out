@@ -35,4 +35,6 @@ public interface SetmealDishMapper {
 
     @Delete("delete from setmeal_dish where setmeal_id = #{SetmealId}")
     void deleteBySetmealId(Long SetmealId);
+
+    void deleteBySetmaleId(Long id);
 }
