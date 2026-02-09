@@ -170,6 +170,15 @@ public class DishServiceImpl implements DishService {
         return dishVOList;
     }
 
+    public void startOrStop(Integer status, Long id){
+        if (id == null) {
+            throw new IllegalArgumentException("菜品ID不能为空");
+        }
+        Dish dish = Dish.builder().id(id).status(status).build();
+        dishMapper.update(dish);
+
+    }
+
 
 
 }
