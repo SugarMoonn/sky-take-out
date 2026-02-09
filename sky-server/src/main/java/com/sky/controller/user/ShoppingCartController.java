@@ -42,6 +42,14 @@ public class ShoppingCartController {
         return Result.success();
     }
 
+    @GetMapping("/list")
+    @ApiOperation("查询购物车列表")
+    public Result<List<ShoppingCart>> list(){
+        log.info("查询购物车数据");
+        List<ShoppingCart> list = shoppingCartService.showShoppingCart();
+        return Result.success(list);
+    }
+
 
 
 
