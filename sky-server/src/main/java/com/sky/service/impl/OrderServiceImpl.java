@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -468,6 +469,24 @@ public class OrderServiceImpl implements OrderService {
         orders.setDeliveryTime(LocalDateTime.now());
 
         orderMapper.update(orders);
+    }
+
+    @Override
+    public void reminder(Long id) {
+        Orders orderDB = orderMapper.getById(id);
+
+//        校验订单是否存在，并且状态为4
+        if (orderDB == null ) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Map map = new HashMap();
+        map.put("type", 2);
+        map.put("orderId", orderDB.getId());
+        map.put("content", "订单号：" + orderDB.getNumber() + "用户催单了，请尽快处理");
+
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+
     }
 
     /**
