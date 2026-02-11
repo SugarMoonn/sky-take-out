@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -28,4 +29,6 @@ public  interface  OrderMapper {
     Page<Orders> pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 
     Integer countStatus(Integer toBeConfirmed);
+
+    Double sumByMap(HashMap<String, Object> hashMap);
 }
