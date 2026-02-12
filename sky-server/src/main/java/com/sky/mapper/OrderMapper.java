@@ -31,4 +31,6 @@ public  interface  OrderMapper {
     Integer countStatus(Integer toBeConfirmed);
 
     Double sumByMap(HashMap<String, Object> hashMap);
+
+    Integer countByMap(HashMap<String, Object> hashMap);
 }

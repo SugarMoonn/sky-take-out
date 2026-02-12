@@ -112,4 +112,63 @@ public class ReportServiceImpl implements ReportService {
                 .totalUserList(StringUtils.join(totalUserList, ","))
                 .build();
     }
+
+    @Override
+    public OrderReportVO getOrderStatistics(LocalDate begin, LocalDate end) {
+        List<LocalDate> dateList = new ArrayList<>();
+        dateList.add(begin);
+        while (!begin.equals(end)) {
+            begin = begin.plusDays(1);
+            dateList.add(begin);
+        }
+
+        //遍历dateList，查询每天的订单数量和订单金额
+        List<Integer> orderCountList = new ArrayList<>();
+        List<Integer> validOrderCountList = new ArrayList<>();
+
+        for(LocalDate date : dateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+
+
+            Integer orderCount = getOrderCount(beginTime, endTime, null);
+
+            Integer validOrderCount = getOrderCount(beginTime, endTime, Orders.COMPLETED);
+
+            orderCountList.add(orderCount);
+            validOrderCountList.add(validOrderCount);
+
+
+        }
+
+        //计算时间区间内的订单总数量
+        Integer totalOrder = orderCountList.stream().reduce(Integer::sum).get();
+        //计算时间区间内的有效订单总数量
+        Integer totalValidOrder = validOrderCountList.stream().reduce(Integer::sum).get();
+
+        Double orderCompletionRate = totalOrder == 0 ? 0.0 : (double) totalValidOrder / totalOrder;
+
+        OrderReportVO orderReportVO = OrderReportVO.builder()
+                .dateList(StringUtils.join(dateList, ","))
+                .orderCountList(StringUtils.join(orderCountList, ","))
+                .validOrderCountList(StringUtils.join(validOrderCountList, ","))
+                .orderCompletionRate(orderCompletionRate)
+                .validOrderCount(totalValidOrder)
+                .totalOrderCount(totalOrder)
+                .build();
+
+
+        return orderReportVO;
+    }
+
+    private Integer getOrderCount(LocalDateTime beginTime, LocalDateTime endTime,Integer status) {
+        HashMap<String, Object> hashMap = new HashMap<String, Object>(){{
+            put("begin", beginTime);
+            put("end", endTime);
+            put("status", status);
+        }};
+
+        Integer orderCount = orderMapper.countByMap(hashMap);
+        return orderCount == null ? 0 : orderCount;
+    }
 }
