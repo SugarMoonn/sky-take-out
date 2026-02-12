@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public  interface  OrderMapper {
@@ -30,7 +31,7 @@ public  interface  OrderMapper {
 
     Integer countStatus(Integer toBeConfirmed);
 
-    Double sumByMap(HashMap<String, Object> hashMap);
+    Double sumByMap(Map<String, Object> hashMap);
 
-    Integer countByMap(HashMap<String, Object> hashMap);
+    Integer countByMap(Map<String, Object> hashMap);
 }
